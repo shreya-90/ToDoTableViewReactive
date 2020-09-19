@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 //MARK: - Menu Items View Model
 protocol TodoMenuItemViewPresentable {
@@ -120,18 +122,17 @@ protocol ToDoViewPresentable {
 
 class TodoViewModel:ToDoViewPresentable {
     
-    weak var view : ToDoView?
+//    weak var view : ToDoView?
     var newToDoItem : String?
-    var items : [ToDoItemPresentable] = []
+//    var items : [ToDoItemPresentable] = []
+    var items : Variable<[ToDoItemPresentable]> = Variable([])
     
-    init(view:ToDoView) {
-        
-        self.view = view
+    init() {
         let item1 = ToDoItemViewModel(id: "1", textValue: "Washing Clothes", parent: self)
         let item2 = ToDoItemViewModel(id: "2", textValue: "Buy Groceries", parent: self)
         let item3 = ToDoItemViewModel(id: "3", textValue: "Wash Car", parent: self)
 
-        items.append(contentsOf : [item1,item2,item3])
+        items.value.append(contentsOf : [item1,item2,item3])
     }
     
 }
@@ -150,36 +151,35 @@ extension TodoViewModel : ToDoViewDelegate {
         guard let newToDoItem = newToDoItem else {
             return
         }
-        let newid = self.items.count + 1
+        let newid = self.items.value.count + 1
         
         let item = ToDoItemViewModel(id: "\(newid)", textValue: newToDoItem, parent: self)
-        self.items.append(item)
-        self.view?.reloadWithNewItem()
+        self.items.value.append(item)
+      //  self.view?.reloadWithNewItem()
         print("New value received in delegate - \(newToDoItem)")
         
     }
     
     func onItemDeleted(id: String) {
         
-        guard let index = self.items.index(where : { $0.id! == id }) else {
+        guard let index = self.items.value.index(where : { $0.id! == id }) else {
             print("index not found")
             return
         }
         
-        self.items.remove(at: index)
-//        self.view?.reloadWithNewItem()
-        self.view?.removeTodoItem(at: index)
+        self.items.value.remove(at: index)
+//        self.view?.removeTodoItem(at: index)
     }
     
     func onItemDone(id: String) {
         print("done called with id \(id)")
         
-        guard let index = self.items.index(where : { $0.id! == id }) else {
+        guard let index = self.items.value.index(where : { $0.id! == id }) else {
             print("index not found")
             return
         }
         
-        var toDoItem = self.items[index]
+        var toDoItem = self.items.value[index]
         toDoItem.isDone = !(toDoItem.isDone!)
     
        if var    doneMenuItem = toDoItem.menuItems?.filter({ (todoMenuItem) -> Bool in
@@ -187,9 +187,9 @@ extension TodoViewModel : ToDoViewDelegate {
         }).first {
         doneMenuItem.title = toDoItem.isDone! ? "Undone" : "Done"
         }
-        view?.updateToDoDone(at: index)
+//        view?.updateToDoDone(at: index)
         
-        self.items.sort { (item1, item2) -> Bool in
+        self.items.value.sort { (item1, item2) -> Bool in
             
             if !(item1.isDone!) && !(item2.isDone!) {
                  return item1.id! < item2.id!
@@ -200,6 +200,6 @@ extension TodoViewModel : ToDoViewDelegate {
             return !(item1.isDone!) && item2.isDone!   // not done items appear before done items
         }
         
-        self.view?.reloadItems()
+//        self.view?.reloadItems()
     }
 }

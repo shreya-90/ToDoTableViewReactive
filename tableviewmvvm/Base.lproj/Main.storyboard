@@ -19,7 +19,6 @@
                                 <rect key="frame" x="0.0" y="166" width="414" height="696"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <connections>
-                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="NoS-8X-34i"/>
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="TAT-tX-wWp"/>
                                 </connections>
                             </tableView>
