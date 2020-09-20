@@ -8,4 +8,8 @@ target 'tableviewmvvm' do
   # Pods for tableviewmvvm
   pod 'RxSwift'
   pod 'RxCocoa'
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
+  pod 'FirebaseFirestoreSwift'
+
 end
